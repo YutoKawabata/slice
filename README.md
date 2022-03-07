@@ -14,9 +14,9 @@
 
 2. Rewrite "obj.name" in main.cpp (only name, not required extension.)  
 
-3. Choose a method from Input's member functions depending on the extension.
-   ex. dat file -> Input<LTYPE>::read3D_tec_quad(obj)
-       ply file -> Input<LTYPE>::read3D_ply(obj)
+3. Choose a method from Input's member functions depending on the extension.<br>
+   ex. dat file -> Input<LTYPE>::read3D_tec_quad(obj)<br>
+       ply file -> Input<LTYPE>::read3D_ply(obj)<br>
 
 4. Define slicing plane by giving the normal vector "n" and a scalar "d".
    Equation for a plane: n.x[0]x + n.x[1]y + n.x[2]z = d
@@ -29,6 +29,6 @@
 
 #Author
 
-Yuto Kawabata
+Yuto Kawabata<br>
 AFE Kobe Univ.
 
