@@ -4,9 +4,9 @@
 
 # Development Environment
 
-@Homebrew gcc 11.2.0_3 
-@VIM 8.2
-@macOS Monterey 12.0.1    
+ ++ Homebrew gcc 11.2.0_3
+ ++ VIM 8.2
+ ++ macOS Monterey 12.0.1    
 
 # Usage
 
