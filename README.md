@@ -2,13 +2,7 @@
 
 @ Slicer for 3D objects written by dat (tecplot, FEquadrilateral) or ply formats.
 
-# Version
-
- ver |   Update
-=====|============
- 1.0 | 2022/03/07
-
-#Development Environment
+# Development Environment
 
 @Homebrew gcc 11.2.0_3 
 @VIM 8.2
