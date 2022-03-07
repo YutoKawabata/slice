@@ -1,0 +1,5 @@
+*.ply
+*.o
+*.dat
+*.plt
+run
