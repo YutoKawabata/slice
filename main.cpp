@@ -22,13 +22,14 @@ using LTYPE=float;
 
 int main(){
    my_lib::vec3<LTYPE> n;
-   n.x[0] = 1.0;
-   n.x[1] = 0.0;
+   n.x[0] = 0.0;
+   n.x[1] = 1.0;
    n.x[2] = 0.0;
-   const LTYPE d = 132; //n.x[0]x + n.x[1]y + n.x[2]z = d 
+   const LTYPE d = 0.0; //n.x[0]x + n.x[1]y + n.x[2]z = d 
    my_lib::Object<LTYPE> obj;
-   obj.name = "cell0200";
-   my_lib::Input<LTYPE>::read3D_tec_quad(obj);
+   obj.name = "shape0100";
+   std::cout << obj.name << std::endl;
+   my_lib::Input<LTYPE>::read3D_vtk_sheet(obj);
    my_lib::Slice<LTYPE>::slicer(obj, n, d);
    my_lib::Output<LTYPE>::write_line(obj);
    return 0;

@@ -1,6 +1,6 @@
 # slice
 
-@ Slicer for 3D objects written by dat (tecplot, FEquadrilateral) or ply formats.
+@ Slicer for 3D objects written by dat (tecplot, FEquadrilateral), ply and vtk formats.
 
 # Development Environment
 
@@ -17,6 +17,7 @@
 3. Choose a method from Input's member functions depending on the extension.<br>
    ex. dat file -> Input<LTYPE>::read3D_tec_quad(obj)<br>
        ply file -> Input<LTYPE>::read3D_ply(obj)<br>
+       vtk file -> Input<LTYPE>::read3D_vtk_sheet(obj)<br>
 
 4. Define slicing plane by giving the normal vector "n" and a scalar "d".
    Equation for a plane: n.x[0]x + n.x[1]y + n.x[2]z = d

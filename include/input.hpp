@@ -13,6 +13,7 @@ namespace my_lib
          ~Input(){};
          static void read3D_ply(Object<T>& obj);
          static void read3D_tec_quad(Object<T>& obj);
+         static void read3D_vtk_sheet(Object<T>& obj);
    };
    //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*//
 }

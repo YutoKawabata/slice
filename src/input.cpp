@@ -12,6 +12,15 @@
 namespace my_lib
 {
    template <typename T>
+   void Swap(T& var)
+   {
+      char* varArray = reinterpret_cast<char*>(&var);
+      for (long i = 0; i < static_cast<long>(sizeof(var)/2); i++){
+         std::swap(varArray[sizeof(var) - 1 - i], varArray[i]);
+      }
+   }
+
+   template <typename T>
    void Input<T>::read3D_ply(Object<T>& obj)
    {
       std::string filename = "./meshes/" + obj.name + ".ply", str;
@@ -121,6 +130,64 @@ namespace my_lib
       MallocHost(&obj.ele,  obj.num_ele );
       copy(tmp_node.begin(), tmp_node.end(), obj.node);
       copy(tmp_ele.begin(),  tmp_ele.end(),  obj.ele );
+      std::cout << "node size = "    << obj.num_node << std::endl;
+      std::cout << "element size = " << obj.num_ele  << std::endl;
+   }
+   //================================================================================
+
+   template <typename T>
+   void Input<T>::read3D_vtk_sheet(Object<T>& obj)
+   {
+      std::string filename = "./meshes/" + obj.name + ".vtk", str;
+      std::ifstream ifs;
+      ifs.open(filename, std::ios::in | std::ios::binary);
+      assert(!ifs.fail());
+      {
+         for (int i = 0; i < 4; i++) {
+            getline(ifs, str);
+         }
+         ifs >> str >> obj.num_node >> str;
+         char c;
+         ifs.read(&c, sizeof(char)); 
+      }
+      {
+         MallocHost(&obj.node, obj.num_node);
+         for (int i = 0; i < obj.num_node; i++) {
+            T tmpx, tmpy, tmpz;
+            ifs.read(reinterpret_cast<char*>(&tmpx), sizeof(T)); 
+            ifs.read(reinterpret_cast<char*>(&tmpy), sizeof(T)); 
+            ifs.read(reinterpret_cast<char*>(&tmpz), sizeof(T)); 
+            Swap(tmpx); Swap(tmpy); Swap(tmpz);
+            obj.node[i].x[0] = tmpx;
+            obj.node[i].x[1] = tmpy;
+            obj.node[i].x[2] = tmpz;
+         }
+      }
+      {
+         int num_cell_data;
+         char c;
+         ifs >> str >> obj.num_ele >> num_cell_data;
+         MallocHost(&obj.ele,  obj.num_ele*2);
+         ifs.read(&c, sizeof(char)); 
+
+         for (int i = 0; i < obj.num_ele; i++) {
+            int tmp;
+            int tmp_ele[4];
+            ifs.read(reinterpret_cast<char*>(&tmp), sizeof(int)); 
+            Swap(tmp);
+            for (int j = 0; j < tmp; j++) {
+               ifs.read(reinterpret_cast<char*>(&tmp_ele[j]), sizeof(int)); 
+               Swap(tmp_ele[j]);
+            }
+            for(int j = 0; j < 2; j++){ 
+               obj.ele[j + i*2].x[0] = tmp_ele[0];
+               obj.ele[j + i*2].x[1] = tmp_ele[j + 1];
+               obj.ele[j + i*2].x[2] = tmp_ele[j + 2];
+            }
+         }
+         obj.num_ele *= 2;
+      }
+      ifs.close();
       std::cout << "node size = "    << obj.num_node << std::endl;
       std::cout << "element size = " << obj.num_ele  << std::endl;
    }
