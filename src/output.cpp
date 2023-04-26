@@ -3,6 +3,7 @@
 #include <cassert>
 #include <fstream>
 #include <string>
+#include <cstring>
 
 #include "mydef.hpp"
 
@@ -57,7 +58,20 @@ namespace my_lib
    template <typename T>
    void Output<T>::write_dat(Object<T>& obj, std::string target)
    {
-      int *node_flag = new int[obj.num_line_node]{};
+      std::string filename = "./results/line_" + obj.name + ".dat";
+      std::ofstream ofs;
+      ofs.open(filename, std::ios::out);
+      assert(!ofs.fail());
+
+      int *node_flag;
+      int *tmp_ele;
+      vec3<T> *tmp_node;
+      MallocHost(&node_flag, obj.num_line_node);
+      MallocHost(&tmp_ele, obj.num_line_ele*2);
+      MallocHost(&tmp_node, obj.num_line_node);
+      memcpy(tmp_ele,  obj.line_ele,  sizeof(int)*obj.num_line_ele*2);
+      memcpy(tmp_node, obj.line_node, sizeof(vec3<T>)*obj.num_line_node);
+
       int cnt = 0;
       for (int i = 0; i < obj.num_line_node; i++) {
          node_flag[i] = -1;
@@ -66,58 +80,65 @@ namespace my_lib
          if (node_flag[i] != -1) continue;
          for (int j = 0; j < obj.num_line_node; j++) {
             if (i == j) continue;
-            if (norm(obj.line_node[i] - obj.line_node[j]) < TOL) {
+            if (norm(tmp_node[i] - tmp_node[j]) < TOL) {
                node_flag[i] = j;
                cnt ++;
             }
          }
       }
-      
       for (int i = 0; i < obj.num_line_node; i++) { 
          if (node_flag[i] == -1) continue;
          for (int j = 0; j < obj.num_line_ele; j++) {
-            if (obj.line_ele[0 + j*2] == i) obj.line_ele[0 + j*2] = node_flag[i]; 
-            if (obj.line_ele[1 + j*2] == i) obj.line_ele[1 + j*2] = node_flag[i]; 
+            if (tmp_ele[0 + j*2] == i) tmp_ele[0 + j*2] = node_flag[i]; 
+            if (tmp_ele[1 + j*2] == i) tmp_ele[1 + j*2] = node_flag[i]; 
          }
       }
 
-      int num = 0;
-      for (int i = 1; i < obj.num_line_ele*2; i++) {
-         if (get_flag(target, obj.line_node[num], obj.line_node[obj.line_ele[i]])) num = obj.line_ele[i];
-      }
-      
-      std::string filename = "./results/line_" + obj.name + ".dat";
-      std::ofstream ofs;
-      ofs.open(filename, std::ios::out);
-      assert(!ofs.fail());
-      int target_ele = -1;
-      do {
-         bool write_flag = false;
-         for (int i = 0; i < obj.num_line_ele; i++) {
-            if (target_ele == i) continue;
-            if (obj.line_ele[0 + i*2] == num) {
-               if (num == -1) {
-                  num = obj.line_ele[0 + i*2];
-                  ofs << obj.line_node[num].x[0] << " " << obj.line_node[num].x[1] << " " << obj.line_node[num].x[2] << "\n";  
-               }
-               num = obj.line_ele[1 + i*2];
-               ofs << obj.line_node[num].x[0] << " " << obj.line_node[num].x[1] << " " << obj.line_node[num].x[2] << "\n";  
-               target_ele = i;
-               write_flag = true;
-            } else if (obj.line_ele[1 + i*2] == num) {
-               if (num == -1) {
-                  num = obj.line_ele[1 + i*2];
-                  ofs << obj.line_node[num].x[0] << " " << obj.line_node[num].x[1] << " " << obj.line_node[num].x[2] << "\n";  
-               }
-               num = obj.line_ele[0 + i*2];
-               ofs << obj.line_node[num].x[0] << " " << obj.line_node[num].x[1] << " " << obj.line_node[num].x[2] << "\n";  
-               target_ele = i;
-               write_flag = true;
+      do{
+         int num = -1;
+         for (int i = 0; i < obj.num_line_ele*2; i++) {
+            if (tmp_ele[i] != -1) {
+               if (num == -1) num = tmp_ele[i];
+               if (get_flag(target, tmp_node[num], tmp_node[tmp_ele[i]])) num = tmp_ele[i];
             }
          }
-         if (!write_flag) break;
+        if (num == -1) break;
+         
+         int target_ele = -1;
+         do {
+            bool write_flag = false;
+            for (int i = 0; i < obj.num_line_ele; i++) {
+               if (target_ele == i) continue;
+               if (tmp_ele[0 + i*2] == num) {
+                  if (target_ele == -1) {
+                     num = tmp_ele[0 + i*2];
+                     ofs << tmp_node[num].x[0] << " " << tmp_node[num].x[1] << " " << tmp_node[num].x[2] << "\n";  
+                  }
+                  num = tmp_ele[1 + i*2];
+                  tmp_ele[0 + i*2] = -1; tmp_ele[1 + i*2] = -1;
+                  ofs << tmp_node[num].x[0] << " " << tmp_node[num].x[1] << " " << tmp_node[num].x[2] << "\n";  
+                  target_ele = i;
+                  write_flag = true;
+               } else if (tmp_ele[1 + i*2] == num) {
+                  if (target_ele == -1) {
+                     num = tmp_ele[1 + i*2];
+                     ofs << tmp_node[num].x[0] << " " << tmp_node[num].x[1] << " " << tmp_node[num].x[2] << "\n";  
+                  }
+                  num = tmp_ele[0 + i*2];
+                  tmp_ele[0 + i*2] = -1; tmp_ele[1 + i*2] = -1;
+                  ofs << tmp_node[num].x[0] << " " << tmp_node[num].x[1] << " " << tmp_node[num].x[2] << "\n";  
+                  target_ele = i;
+                  write_flag = true;
+               }
+            }
+            if (!write_flag) break;
+         }while(true);
       }while(true);
       ofs.close();
+
+      free(node_flag);
+      free(tmp_ele);
+      free(tmp_node);
    }
    //================================================================================
 

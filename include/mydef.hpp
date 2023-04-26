@@ -263,6 +263,13 @@ namespace my_lib
       int*       line_ele;
       vec3<T>*   line_node;
       std::string name;
+
+      ~Object() {
+         free(ele);
+         free(node);
+         free(line_ele);
+         free(line_node);
+      }
    };
    //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*//
 

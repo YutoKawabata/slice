@@ -148,6 +148,9 @@ namespace my_lib
             obj.num_line_ele ++;
          }
       }
+      free(tmp);
+      free(tmp_flag);
+      free(tmp_ele);
 
       std::cout << "num_line_ele = " << obj.num_line_ele << "\n";
       std::cout << "num_line_node = " << obj.num_line_node << "\n";
