@@ -31,6 +31,7 @@ int main(){
    std::cout << obj.name << std::endl;
    my_lib::Input<LTYPE>::read3D_vtk_sheet(obj);
    my_lib::Slice<LTYPE>::slicer(obj, n, d);
-   my_lib::Output<LTYPE>::write_line(obj);
+   //my_lib::Output<LTYPE>::write_tec(obj);
+   my_lib::Output<LTYPE>::write_dat(obj, "X_min"); //X_min, X_max, Y_min, Y_max, Z_min, Z_max
    return 0;
 }
