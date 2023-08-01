@@ -15,8 +15,7 @@ namespace my_lib
    void Swap(T& var)
    {
       char* varArray = reinterpret_cast<char*>(&var);
-      for (long i = 0; i < static_cast<long>(sizeof(var)/2); i++){
-         std::swap(varArray[sizeof(var) - 1 - i], varArray[i]);
+      for (long i = 0; i < static_cast<long>(sizeof(var)/2); i++){ std::swap(varArray[sizeof(var) - 1 - i], varArray[i]);
       }
    }
 
@@ -186,6 +185,36 @@ namespace my_lib
             }
          }
          obj.num_ele *= 2;
+      }
+      ifs.close();
+      std::cout << "node size = "    << obj.num_node << std::endl;
+      std::cout << "element size = " << obj.num_ele  << std::endl;
+   }
+   //================================================================================
+
+   template <typename T>
+   void Input<T>::read3D_tec_tri(Object<T>& obj)
+   {
+      std::string filename = "./meshes/" + obj.name + ".dat", str;
+      std::ifstream ifs;
+      ifs.open(filename, std::ios::in);
+      assert(!ifs.fail());
+
+      std::getline(ifs, str);
+      std::getline(ifs, str);
+      sscanf(str.data(), "ZONE T = \"Cell\", NODES=%d, ELEMENTS=%d, DATAPACKING=POINT, ZONETYPE=FETRIANGLE\n",
+             &obj.num_node, &obj.num_ele);
+      MallocHost(&obj.node, obj.num_node);
+      MallocHost(&obj.ele,  obj.num_ele );
+      for(int i = 0; i < obj.num_node; i++){
+         ifs >> obj.node[i].x[0] >> obj.node[i].x[1] >> obj.node[i].x[2];
+         std::getline(ifs, str);
+      }
+      for(int i = 0; i < obj.num_ele; i++){
+         ifs >> obj.ele[i].x[0] >> obj.ele[i].x[1] >> obj.ele[i].x[2];
+         obj.ele[i].x[0] --;
+         obj.ele[i].x[1] --;
+         obj.ele[i].x[2] --;
       }
       ifs.close();
       std::cout << "node size = "    << obj.num_node << std::endl;

@@ -27,9 +27,10 @@ int main(){
    n.x[2] = 0.0;
    const LTYPE d = 0.0; //n.x[0]x + n.x[1]y + n.x[2]z = d 
    my_lib::Object<LTYPE> obj;
-   obj.name = "shape0081";
+   obj.name = "cell0000";
    std::cout << obj.name << std::endl;
-   my_lib::Input<LTYPE>::read3D_vtk_sheet(obj);
+   my_lib::Input<LTYPE>::read3D_tec_tri(obj);
+//   my_lib::Input<LTYPE>::read3D_ply(obj);
    my_lib::Slice<LTYPE>::slicer(obj, n, d);
    my_lib::Output<LTYPE>::write_dat(obj, "X_min"); //X_min, X_max, Y_min, Y_max, Z_min, Z_max
    my_lib::Output<LTYPE>::write_tec(obj);

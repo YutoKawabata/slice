@@ -23,7 +23,7 @@ namespace my_lib
      }
      (*f) = (T *)calloc(size, sizeof(T)); 
      if (*f == NULL) {
-       printf(" malloc host error! size=%d, typesize=%d\n", size, sizeof(T));
+       printf(" malloc host error! size=%d, typesize=%ld\n", size, sizeof(T));
        std::string varname = TO_STRING(f);
        exit(1);
      }

@@ -14,6 +14,7 @@ namespace my_lib
          static void read3D_ply(Object<T>& obj);
          static void read3D_tec_quad(Object<T>& obj);
          static void read3D_vtk_sheet(Object<T>& obj);
+         static void read3D_tec_tri(Object<T>& obj);
    };
    //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*//
 }

@@ -1,6 +1,6 @@
 # slice
 
-@ Slicer for 3D objects written by dat (tecplot, FEquadrilateral), ply and vtk formats.
+@ Slicer for 3D objects written by dat (tecplot: FEquadrilateral, FEtriangle), ply and vtk formats.
 
 # Development Environment
 
@@ -16,6 +16,7 @@
 
 3. Choose a method from Input's member functions depending on the extension.<br>
    ex. dat file -> Input<LTYPE>::read3D_tec_quad(obj)<br>
+       dat file -> Input<LTYPE>::read3D_tec_tri(obj)<br>
        ply file -> Input<LTYPE>::read3D_ply(obj)<br>
        vtk file -> Input<LTYPE>::read3D_vtk_sheet(obj)<br>
 
